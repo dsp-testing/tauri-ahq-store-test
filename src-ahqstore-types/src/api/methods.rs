@@ -169,7 +169,7 @@ pub async fn get_devs_apps(apps_dev: &str, commit: &str, id: &str) -> Option<Vec
     .send()
     .await
     .ok()?
-    .json()
+    .text()
     .await
     .ok()?;
 

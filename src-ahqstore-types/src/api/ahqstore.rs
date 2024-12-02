@@ -24,6 +24,6 @@ pub static AHQSTORE_MAP: LazyLock<String> =
   LazyLock::new(|| format!("{AHQSTORE_BASE_URL}/db/map/{{ID}}.json"));
 
 pub static AHQSTORE_APPS_DEV: LazyLock<String> =
-  LazyLock::new(|| format!("{AHQSTORE_BASE_URL}/db/dev/{{ID}}.json"));
+  LazyLock::new(|| format!("{AHQSTORE_BASE_URL}/db/dev/{{ID}}"));
 pub static AHQSTORE_DEV_DATA: LazyLock<String> =
   LazyLock::new(|| format!("{AHQSTORE_BASE_URL}/users/{{ID}}.json"));

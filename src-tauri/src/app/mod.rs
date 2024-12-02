@@ -261,7 +261,8 @@ pub fn main() {
       get_app,
       get_dev_data,
       get_app_asset,
-      get_devs_apps
+      get_devs_apps,
+      get_arch
     ])
     .menu(|handle| Menu::new(handle))
     .build(context)
@@ -565,6 +566,11 @@ fn get_windows() -> &'static str {
       "10"
     }
   };
+}
+
+#[tauri::command(async)]
+fn get_arch() -> &'static str {
+  std::env::consts::ARCH
 }
 
 #[cfg(windows)]

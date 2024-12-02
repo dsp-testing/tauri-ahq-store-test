@@ -24,6 +24,6 @@ pub static WINGET_MAP: LazyLock<String> =
   LazyLock::new(|| format!("{WINGET_BASE_URL}/db/map/{{ID}}.json"));
 
 pub static WINGET_APPS_DEV: LazyLock<String> =
-  LazyLock::new(|| format!("{WINGET_BASE_URL}/db/dev/{{ID}}.json"));
+  LazyLock::new(|| format!("{WINGET_BASE_URL}/db/dev/{{ID}}"));
 pub static WINGET_DEV_DATA: LazyLock<String> =
   LazyLock::new(|| format!("{WINGET_BASE_URL}/users/{{ID}}.json"));

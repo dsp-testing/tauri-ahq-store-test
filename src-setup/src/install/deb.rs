@@ -5,6 +5,7 @@ use std::{
 };
 
 pub fn get_sudo() -> Child {
+  println!("Running pxexec");
   let child = Command::new("pkexec")
     .args(["sudo", "-i"])
     .stdin(Stdio::piped())
@@ -18,9 +19,10 @@ pub fn install_deb(child: &mut Child, path: &str) {
   let stdin = child.stdin.as_mut();
   let stdin = stdin.unwrap();
 
-  let data = format!("dpkg -i {:?}\n", &path);
+  let data = format!("sudo apt install {:?}\n", &path);
 
   let _ = stdin.write_all(data.as_bytes());
+  let _ = stdin.flush();
 }
 
 pub fn install_daemon(child: &mut Child, service: String) {

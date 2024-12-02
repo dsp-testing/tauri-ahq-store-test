@@ -127,8 +127,6 @@ pub async fn read_msg(pipe: &mut NamedPipeClient) -> ReadResponse {
       ReadResponse::Data(buf)
     }
     Err(e) => {
-      println!("Error: {e:?}");
-
       match e.kind() {
         ErrorKind::WouldBlock => ReadResponse::None,
         _ => ReadResponse::None,

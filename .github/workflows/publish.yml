@@ -19,6 +19,7 @@ jobs:
     outputs:
       upload_url: ${{ steps.get-u-url.outputs.result }}
       release_id: ${{ steps.get-id.outputs.result }}
+      tag_name: ${{ steps.get-tag.outputs.result }}
 
     steps:
       - name: Checkout Repo
@@ -90,6 +91,24 @@ jobs:
               return data.upload_url;
             } catch (_) {
               return data.upload_url;
+            }
+
+      - name: Get Tag Name
+        id: get-tag
+        uses: actions/github-script@v7
+        env:
+          data: ${{ steps.create-release.outputs.result }}
+        with:
+          result-encoding: string
+          script: |
+            let data = process.env.data;
+    
+            try {
+              data = JSON.parse(data);
+
+              return data.tag_name;
+            } catch (_) {
+              return data.tag_name;
             }
 
 
@@ -184,6 +203,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Node
+        uses: actions/setup-node@v4
+
+      - name: Install packages
+        run: |
+          npm i -g pnpm
+          pnpm install
+
       - name: Install Rust Nightly
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -196,9 +223,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install gcc-aarch64-linux-gnu
 
-      - name: Build Setup
+      - name: Build Windows GUI Setup
+        if: matrix.os == 'windows-latest'
         run: cargo build --release --target ${{ matrix.target }}
         working-directory: src-setup
+
+      - name: Build Linux CLI Setup
+        if: matrix.os == 'windows-latest'
+        run: node linux_setup.cjs
+        env:
+          TAG: ${{ needs.create-release.outputs.tag_name }}
 
       - name: Upload Windows Setup
         if: matrix.os == 'windows-latest'
@@ -218,8 +252,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./src-setup/target/${{ matrix.target }}/release/ahqstore_setup_amd64
-          asset_name: ahqstore_setup_linux_${{ matrix.arch }}
+          asset_path: ./install.sh
+          asset_name: install.sh
           asset_content_type: application/octet-stream
 
   publish-tauri:

@@ -5,7 +5,7 @@ use reqwest::Client;
 pub async fn download<T: FnMut(f32)>(client: &mut Client, url: &str, path: &str, mut call: T) {
   let _ = fs::remove_file(&path);
 
-  println!("Path: {}", &url);
+  println!("Path: {}", &path);
   let mut response = client.get(url).send().await.unwrap();
 
   let mut c = 0;

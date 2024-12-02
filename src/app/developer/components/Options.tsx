@@ -1,6 +1,6 @@
 import { MouseEventHandler } from "react";
-import { IconType } from "react-icons";
-import { IoIosArrowForward } from "react-icons/io";
+import { IconBaseProps, IconType } from "react-icons";
+import { FiExternalLink } from "react-icons/fi";
 
 function darkMode(classes: Array<string>, dark: boolean) {
   let newClasses: string[] = [];
@@ -27,10 +27,10 @@ export default function SettingOption(props: {
   const { dark, title, description, ShowCaseIcon, onClick, PopUp, Extra } =
     props;
 
-  const LinkIcon = PopUp || IoIosArrowForward;
+  const LinkIcon = PopUp != undefined ? (_ignore: IconBaseProps) => <></> : FiExternalLink;
 
   return (
-    <div className={`${darkMode(["checkbox"], dark)} checkbox-special mt-3`}>
+    <div className={`${darkMode(["checkbox"], dark)} checkbox-special mt-3 cursor-pointer`}>
       <div className="checkbox-special-child" onClick={onClick}>
         <div className="ml-3"></div>
 
@@ -45,19 +45,23 @@ export default function SettingOption(props: {
         <div className="ml-3"></div>
 
         <h6>
-          {title}
+          <div className="flex space-x-1">
+            <h2>{title}</h2>
+            <LinkIcon
+              size="1em"
+              className={
+                dark ? "text-slate-300" : "text-slate-700"
+              }
+            />
+          </div>
+
           <p>{description}</p>
         </h6>
 
         <div className="mx-auto"></div>
 
         <div className="my-auto ml-auto mr-1 transition-all">
-          <LinkIcon
-            size="3em"
-            className={
-              dark ? "text-slate-300" : "text-slate-700"
-            }
-          />
+          {PopUp ? <PopUp /> : <></>}
         </div>
 
         <div className="mr-3"></div>

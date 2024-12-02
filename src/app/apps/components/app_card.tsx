@@ -33,7 +33,7 @@ const def: appData = {
   },
   releaseTagName: "",
   resources: [],
-  app_page: "",
+  verified: false,
   license_or_tos: "",
   site: "",
   source: "",

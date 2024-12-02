@@ -37,8 +37,12 @@ export default function Developers(props: DevProps) {
     (async () => {
       try {
         if (uid) {
+          const hash = await generateGHUserHash(uid).catch(() => "");
+
+          console.log("Hash ", hash);
+
           const apps = await get_devs_apps(
-            await generateGHUserHash(uid).catch(() => ""),
+            hash,
           );
 
           console.log(apps);
@@ -81,7 +85,7 @@ export default function Developers(props: DevProps) {
           Icon ? (
             <></>
           ) : (
-            <div className="flex flex-col">
+              <div className="flex flex-col mb-2">
               {publishedApps === undefined ? (
                   <>
                     <h1 className={`mx-auto ${dark ? "text-white" : ""}`}>
@@ -96,8 +100,8 @@ export default function Developers(props: DevProps) {
                           <App
                             appInfo={value}
                             dark={props.dark}
-                            toast={Toast}
                             lastIndex={index === publishedApps.length - 1}
+                            index={index}
                           />
                         );
                       })}
@@ -119,7 +123,6 @@ export default function Developers(props: DevProps) {
           });
           Toast("Launched docs site...", "success", 2);
         }}
-        PopUp={FiExternalLink}
       />
       <Option
         dark={dark}
@@ -132,7 +135,6 @@ export default function Developers(props: DevProps) {
           });
           Toast("Launched discord invite...", "success", 2);
         }}
-        PopUp={FiExternalLink}
       />
     </div>
   );

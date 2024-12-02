@@ -1,36 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 //Icons
-import { MdModeEdit } from "react-icons/md";
 import { IoIosNotifications } from "react-icons/io";
 
 //API
 import { appData, getResource } from "../../resources/api/fetchApps";
-import Toast from "../../resources/api/toast";
-import { invoke } from "@tauri-apps/api/core";
 
 export default function App({
   appInfo,
   dark,
-  toast,
   lastIndex,
+  index,
 }: {
-  appInfo: appData;
-  dark: boolean;
-  toast: typeof Toast;
-  lastIndex: boolean;
+    appInfo: appData;
+    dark: boolean;
+    lastIndex: boolean;
+    index: number;
 }) {
   const updating = false;
-  const data = useRef<HTMLDivElement>("" as any);
 
   const [icon, setIcon] = useState<string>();
-
-  async function handleClick() {
-    toast("Opened in browser", "success", 1);
-    invoke("open", {
-      url: "https://github.com/ahqstore/apps",
-    });
-  }
 
   useEffect(() => {
     (async () => {
@@ -40,9 +29,7 @@ export default function App({
 
   return (
     <div
-      className={`mx-2 rounded-md my-1 flex min-h-[4.5rem] max-h-[4.5rem] max-w-[100%] ${
-        dark ? "bg-gray-800 text-white" : "bg-gray-100 text-slate-800"
-      } ${lastIndex ? "rounded-b-md" : ""} hover:shadow-xl pl-2 cursor-default`}
+      className={`mx-2 flex min-h-[4.5rem] max-h-[4.5rem] max-w-[100%] checkbox pl-2 cursor-default rounded-none ${lastIndex ? "rounded-b-lg" : ""} ${index == 0 ? "rounded-t-lg" : ""}`}
     >
       {icon ? (
         <img
@@ -57,7 +44,7 @@ export default function App({
           }}
         />
       ) : (
-        <div
+          <div
           className={`dui-loading dui-loading-lg dui-loading-ring mt-5 mr-2 mb-[0.75rem] ${dark ? "text-white" : ""
             }`}
         />
@@ -79,21 +66,6 @@ export default function App({
           {appInfo.description.length > 64 ? "..." : ""}
         </h2>
       </div>
-
-      {!updating ? (
-        <div className="ml-auto mr-3 my-auto" ref={data}>
-          <button
-            className="flex min-w-[100%] p-4 min-h-[3rem] justify-center items-center text-center text-base-content hover:text-accent-content hover:bg-accent-foreground rounded-xl transition-all cursor-pointer"
-            onClick={() => {
-              handleClick();
-            }}
-          >
-            <MdModeEdit size="1.5em" />
-          </button>
-        </div>
-      ) : (
-        <></>
-      )}
     </div>
   );
 }

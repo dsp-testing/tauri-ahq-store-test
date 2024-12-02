@@ -65,28 +65,31 @@ export async function fetchAuthor(uid: string) {
 async function resolveApps(apps: string[]): Promise<appData[]> {
   let promises: Promise<appData>[] = [];
 
+  console.log(apps.find((s) => s == undefined));
   apps.forEach((appId) => {
-    if (cache[appId]) {
-      promises.push(
-        (async () => {
-          return cache[appId];
-        })(),
-      );
-    } else {
-      promises.push(
-        (async () => {
-          const app = await get_app(appId);
+    if (appId != undefined) {
+      if (cache[appId]) {
+        promises.push(
+          (async () => {
+            return cache[appId];
+          })(),
+        );
+      } else {
+        promises.push(
+          (async () => {
+            const app = await get_app(appId);
 
-          const appData = {
-            ...app,
-            id: appId,
-          } as appData;
+            const appData = {
+              ...app,
+              id: appId,
+            } as appData;
 
-          cache[appId] = appData;
+            cache[appId] = appData;
 
-          return appData;
-        })(),
-      );
+            return appData;
+          })(),
+        );
+      }
     }
   });
 

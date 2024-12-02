@@ -51,7 +51,7 @@ interface SimplifiedProps {
 
 export function ApplicationPopup(props: SimplifiedProps) {
   const { shown, children } = props;
-  return <div className={`${shown ? "" : "hidden"} absolute rounded-md z-[1000] w-[calc(100vw-12rem)] h-[98vh]`}>
+  return <div className={`${shown ? "" : "hidden"} absolute rounded-md z-[20] w-[calc(100vw-12rem)] h-[98vh]`}>
     {children}
   </div>
 }

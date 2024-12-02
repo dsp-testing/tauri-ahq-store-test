@@ -36,52 +36,50 @@ export default function Search(props: SearchProps) {
 
 
   return (
-      <div
-        className={`${hide ? "hidden" : ""} w-[100%] h-[auto] overflow-scroll search-app-grid ${
-          matches.length == 0 ? "special-app-grid" : ""
+    <div
+      className={`${hide ? "hidden" : ""} w-[100%] h-[auto] overflow-scroll search-app-grid ${matches.length == 0 ? "special-app-grid" : ""
         }`}
-      >
-        {matches.map((app) => {
-          return (
-            <AppCard
-              id={app.appId}
-              key={app.appId}
-              dark={dark}
-              onClick={() => {
-                set(app.appId);
-                show();
-              }}
-            />
-          );
-        })}
-        {matches.length === 0 ? (
-          <div
-            className={`mx-auto my-2 flex items-center justify-center ${
-              dark ? "text-slate-200" : ""
-              }`}
-          >
-            <span className="block">
-              {searched ? (
-                "0 Apps Found"
-              ) : (
-                <div className="flex w-[100%] justify-center">
-                  <span className="dui-loading dui-loading-spinner dui-loading-lg" />
-                  <span className="ml-2">Just a moment...</span>
-                </div>
-              )}
-            </span>
-          </div>
-        ) : (
-          <></>
-        )}
-        <div className="h-[5rem]"></div>
-      </div>
-    );
+    >
+      {matches.map((app) => {
+        return (
+          <AppCard
+            id={app.appId}
+            key={app.appId}
+            dark={dark}
+            onClick={() => {
+              set(app.appId);
+              show();
+            }}
+          />
+        );
+      })}
+      {matches.length === 0 ? (
+        <div
+          className={`mx-auto my-2 flex items-center justify-center ${dark ? "text-slate-200" : ""
+            }`}
+        >
+          <span className="block">
+            {searched ? (
+              "0 Apps Found"
+            ) : (
+              <div className="flex w-[100%] justify-center">
+                <span className="dui-loading dui-loading-spinner dui-loading-lg" />
+                <span className="ml-2">Just a moment...</span>
+              </div>
+            )}
+          </span>
+        </div>
+      ) : (
+        <></>
+      )}
+      <div className="h-[5rem]"></div>
+    </div>
+  );
 }
 
 async function getMatches(query: string): Promise<string[]> {
   const matches = await search<{ id: string }[]>(query);
-  const finalmatches = matches.map(({ id }) => id);
+  const finalmatches = matches.map(({ id }) => id).filter((s) => s != undefined);
 
   finalmatches.length = 40;
 

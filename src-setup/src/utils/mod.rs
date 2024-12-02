@@ -72,6 +72,15 @@ pub fn get_install() -> String {
   path.to_str().unwrap().to_string()
 }
 
+#[cfg(not(windows))]
+pub fn get_temp_service_dir() -> String {
+  let mut path = home_dir().unwrap();
+
+  path.push("ahqstore_service");
+
+  path.to_str().unwrap().to_string()
+}
+
 pub fn get_service_dir() -> String {
   use std::fs;
   #[cfg(windows)]

@@ -32,6 +32,10 @@ import {
 
 // Icon
 import pkg from "./package.png";
+import { AHQStoreApplication } from "src-ahqstore-types/pkg/ahqstore_types";
+import { getArch } from "@/app/resources/api/os";
+
+import Markdown from 'react-markdown'
 
 interface AppDataPropsModal {
   shown: boolean;
@@ -73,7 +77,7 @@ const defAppData: appData = {
     repo: "",
   },
   version: "",
-  app_page: "",
+  verified: false,
   license_or_tos: "",
   releaseTagName: "",
   resources: {},
@@ -89,6 +93,10 @@ export default function ShowModal(props: AppDataPropsModal) {
   } = (window as any).prefs as { accessPrefs: { install_apps: boolean } };
 
   const [appData, setAppData] = useState<appData>(defAppData);
+
+  const [unsupported, setUnsupported] = useState(false);
+  const [admin] = useState(false);
+
   const [resources, setResources] = useState<string[]>([pkg]);
 
   const button = useRef<HTMLButtonElement>("" as any);
@@ -162,11 +170,45 @@ export default function ShowModal(props: AppDataPropsModal) {
     setInstalled("hidden");
     (async () => {
       if ((installData || "") !== "") {
-        const apps = await fetchApps(installData);
+        const apps = await fetchApps(installData) as AHQStoreApplication;
 
         setAppData(apps as any);
         setInstalled(await isInstalled(installData));
         setAuthor(await fetchAuthor((apps as appData).authorId));
+
+        setUnsupported(
+          (() => {
+            const install = apps.install;
+
+            const arch = getArch();
+
+            if (window.os.type == "windows") {
+              // Windows
+              switch (arch) {
+                case "x86_64":
+                  return install.win32 == undefined;
+                case "aarch64":
+                  return install.winarm == undefined;
+                default:
+                  return true;
+              }
+            } else {
+              // Linux
+              switch (arch) {
+                case "x86_64":
+                  return install.linux == undefined;
+                case "aarch64":
+                  return install.linuxArm64 == undefined;
+                case "arm":
+                  return install.linuxArm7 == undefined;
+                default:
+                  return true;
+              }
+            }
+          })()
+        );
+
+        // TODO: Set Admin
 
         setUpdating(false);
       }
@@ -261,8 +303,9 @@ export default function ShowModal(props: AppDataPropsModal) {
                   dark ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                {(description || "").substring(0, 128)}
-                {description.length > 128 && <>...</>}
+                <Markdown>
+                  {description}
+                </Markdown>
               </h2>
             </div>
 
@@ -273,6 +316,14 @@ export default function ShowModal(props: AppDataPropsModal) {
               max="100"
               hidden
             ></progress>
+
+            <div
+              role="alert"
+              className={`dui-alert dui-alert-warning text-warning-content mb-2 ${!unsupported ? "hidden" : ""}`}
+            >
+              <IoWarning size={"1.5rem"} />
+              <span>This app is not supported for this OS</span>
+            </div>
 
             {isAdmin || install_apps ? (
               installed == "hidden" ? (
@@ -303,18 +354,7 @@ export default function ShowModal(props: AppDataPropsModal) {
                   Uninstall {updating && <>(Updating)</>}
                 </button>
               ) : (
-                <>
-                  {(window.os.type == "windows"
-                    ? appData.install.win32 == undefined
-                    : appData.install.linux == undefined) && (
-                    <div
-                      role="alert"
-                      className="dui-alert dui-alert-warning text-warning-content mb-2"
-                    >
-                      <IoWarning size={"1.5rem"} />
-                      <span>Unsupported OS</span>
-                    </div>
-                  )}
+                    <>
                   <button
                     ref={button}
                     className={`dui-btn ${
@@ -377,60 +417,6 @@ export default function ShowModal(props: AppDataPropsModal) {
                 </Carousel>
               )}
             </div>
-            {/* <div
-              className={`mt-3 w-[100%] ${displayImages.length == 0 ? "hidden" : ""}`}
-            >
-              <h1 className="text-xl">Images</h1>
-              <div className="dui-carousel dui-carousel-end w-full rounded-md pl-0">
-
-
-                {resources.length < 2 ? <div
-                  className={`dui-loading dui-loading-lg dui-loading-ring mt-5 mx-auto mb-[0.75rem] ${props.dark ? "text-white" : ""
-                    }`}
-                /> : <Carousel>
-                  <CarouselContent>
-                    <CarouselItem>...</CarouselItem>
-                    <CarouselItem>...</CarouselItem>
-                      <CarouselItem>...</CarouselItem> {displayImages.map((img, i) => (
-                        <div
-                          key={img}
-                          id={`app-desc-slide-${i}`}
-                          className="dui-carousel-item relative w-full"
-                        >
-                          <img
-                            src={resources[i + 1]}
-                            className="mx-auto rounded-lg"
-                          />
-                          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                            <a
-                              href={
-                                i != 0
-                                  ? `#app-desc-slide-${i - 1}`
-                                  : "#app-desc-slide-0"
-                              }
-                              className={`dui-btn dui-btn-circle ${i != 0 ? "dui-btn-accent" : "dui-btn-disabled"}`}
-                            >
-                              ❮
-                            </a>
-                            <a
-                              href={
-                                i + 1 != displayImages.length
-                                  ? `#app-desc-slide-${i + 1}`
-                                  : `#app-desc-slide-${displayImages.length}`
-                              }
-                              className={`dui-btn dui-btn-circle  ${i + 1 != displayImages.length ? "dui-btn-accent" : "dui-btn-disabled"}`}
-                            >
-                              ❯
-                            </a>
-                          </div>
-                        </div>
-                      ))}</CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>}
-
-              </div>
-            </div> */}
 
             {/* Author */}
             <div className="mt-3 w-[100%]">

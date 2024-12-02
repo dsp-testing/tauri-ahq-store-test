@@ -51,7 +51,7 @@ async fn plt_install(win: &AppWindow, client: &mut Client, files: &ReleaseData) 
 
   use crate::{
     install::deb::{exit, get_sudo, install_daemon, install_deb},
-    utils::get_service_dir,
+    utils::{get_service_dir, get_temp_service_dir},
   };
 
   if &files.deb == "" {
@@ -68,9 +68,8 @@ async fn plt_install(win: &AppWindow, client: &mut Client, files: &ReleaseData) 
 
   win.set_msg("Downloading...".into());
 
-  let mut sudo = get_sudo();
   let installer = get_install();
-  let service = get_service_dir();
+  let temp_service = get_temp_service_dir();
 
   let _ = fs::remove_file(&installer);
 
@@ -83,7 +82,7 @@ async fn plt_install(win: &AppWindow, client: &mut Client, files: &ReleaseData) 
   win.set_counter(0.0);
   thread::sleep(Duration::from_secs(3));
 
-  download(client, &files.linux_daemon, &service, |perc| {
+  download(client, &files.linux_daemon, &temp_service, |perc| {
     win.set_counter(perc);
   })
   .await;
@@ -93,8 +92,9 @@ async fn plt_install(win: &AppWindow, client: &mut Client, files: &ReleaseData) 
 
   win.set_msg("Installing...".into());
 
+  let mut sudo = get_sudo();
   install_deb(&mut sudo, &installer);
-  install_daemon(&mut sudo, service);
+  install_daemon(&mut sudo, temp_service);
   exit(sudo);
 
   thread::sleep(Duration::from_secs(1));
