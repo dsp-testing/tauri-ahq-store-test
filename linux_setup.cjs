@@ -8,4 +8,4 @@ const result = data
   .replace("%%deb%%", `AHQ.Store_${version}_amd64.deb`)
   .replace("%%rpm%%", `AHQ.Store-${version}-1.x86_64.rpm`);
 
-writeFileSync("./install.sh", data);
+writeFileSync("./install.sh", result);
