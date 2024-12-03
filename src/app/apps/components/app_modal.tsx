@@ -303,9 +303,7 @@ export default function ShowModal(props: AppDataPropsModal) {
                   dark ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                <Markdown>
-                  {description}
-                </Markdown>
+                {description.length > 128 ? description.substring(0, 127) : description}
               </h2>
             </div>
 
@@ -382,7 +380,9 @@ export default function ShowModal(props: AppDataPropsModal) {
           >
             <div className="w-full">
               <h1 className="text-xl">Description</h1>
-              <p>{description}</p>
+              <Markdown>
+                {description}
+              </Markdown>
             </div>
 
             {/* Display Images */}
