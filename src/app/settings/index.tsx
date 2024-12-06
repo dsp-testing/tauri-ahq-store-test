@@ -10,7 +10,6 @@ import getWindows, {
 } from "../resources/api/os";
 
 //Tauri
-import { sendNotification } from "@tauri-apps/plugin-notification";
 import { getVersion } from "@tauri-apps/api/app";
 import { invoke } from "@tauri-apps/api/core";
 
@@ -24,10 +23,11 @@ import StartOptions from "./components/startOptions";
 import themes from "../resources/utilities/themes";
 
 import { BiMoon, BiSun } from "react-icons/bi";
-import { BsCodeSlash, BsFonts, BsWindowSidebar } from "react-icons/bs";
+import { BsFonts, BsWindowSidebar } from "react-icons/bs";
 import { HiWrenchScrewdriver } from "react-icons/hi2";
 import { FaUsersGear } from "react-icons/fa6";
 import { HiOutlineColorSwatch } from "react-icons/hi";
+import { TbZoomInArea } from "react-icons/tb";
 
 import "./styles.css";
 import { SiDaisyui, SiTailwindcss } from "react-icons/si";
@@ -47,9 +47,14 @@ interface InitProps {
   setTheme: Function;
 }
 
+const zoom = [
+  "100%",
+  "125%",
+  "150%",
+];
+
 export default function Init(props: InitProps) {
-  const [user, setUser] = useState(props.auth.currentUser as User),
-    [show, setShow] = useState(false),
+  const [show] = useState(false),
     [showOtherUserOptions, setOUO] = useState(false);
 
   const [ver, setVer] = useState("0.9.0");
@@ -145,19 +150,31 @@ export default function Init(props: InitProps) {
         />
 
         <ListSelector
+          klist="theme"
           list={themes}
           Icon={HiOutlineColorSwatch}
           initial={props.theme}
           onChange={(e) => {
-            props.setTheme(e.target.value);
+            props.setTheme(e);
           }}
         />
 
         <ListSelector
+          klist="scale"
+          list={zoom}
+          Icon={TbZoomInArea}
+          initial={props.theme}
+          onChange={(e) => {
+            (document.querySelector("html") as HTMLElement).style.zoom = e;
+          }}
+        />
+
+        <ListSelector
+          klist="font"
           Icon={BsFonts}
           initial={props.font}
           onChange={(e) => {
-            props.setFont(e.target.value);
+            props.setFont(e);
           }}
         />
 
@@ -165,8 +182,8 @@ export default function Init(props: InitProps) {
           dark={props.dark}
           Icon={BsWindowSidebar}
           initial={props.sidebar}
-          onChange={(e) => {
-            props.setSidebar(e.target.value);
+          onChange={(value) => {
+            props.setSidebar(value);
           }}
         />
 

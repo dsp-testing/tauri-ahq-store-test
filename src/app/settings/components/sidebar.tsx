@@ -1,11 +1,11 @@
-import { ChangeEventHandler } from "react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IconType } from "react-icons/lib";
 
 export default function SidebarSelector(props: {
   Icon: IconType;
   dark: boolean;
   initial: string;
-  onChange: ChangeEventHandler<HTMLSelectElement>;
+  onChange: (e: string) => void;
 }) {
   const { Icon, initial, onChange } = props;
 
@@ -38,17 +38,18 @@ export default function SidebarSelector(props: {
 
       <div className="mx-auto"></div>
 
-      <select
-        className="dui-select dui-select-bordered w-[15rem] max-w-xs my-auto"
-        defaultValue={initial}
-        onChange={onChange}
-        style={{
-          fontWeight: "bold",
-        }}
-      >
-        <option value="flex-row">Left</option>
-        <option value="flex-row-reverse">Right</option>
-      </select>
+      <Select onValueChange={onChange} defaultValue={initial}>
+        <SelectTrigger className="h-10 w-[15rem] max-w-xs my-auto">
+          <SelectValue placeholder="Select Sidebar Location" />
+        </SelectTrigger>
+
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="flex-row">Left</SelectItem>
+            <SelectItem value="flex-row-reverse">Right</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
 
       <div className="mr-3"></div>
     </div>

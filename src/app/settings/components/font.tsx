@@ -1,13 +1,14 @@
-import { ChangeEventHandler } from "react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IconType } from "react-icons/lib";
 
 export default function ListSelector(props: {
   Icon: IconType;
   initial: string;
-  onChange: ChangeEventHandler<HTMLSelectElement>;
+  onChange: (e: string) => void;
   list?: string[];
+  klist: "font" | "theme" | "scale"
 }) {
-  const { Icon, initial, onChange, list } = props;
+  const { Icon, initial, onChange, list, klist } = props;
 
   return (
     <div
@@ -33,78 +34,77 @@ export default function ListSelector(props: {
       <div className="ml-3"></div>
 
       <h6 style={{ cursor: "default" }}>
-        {!list ? (
+        {klist == "font" ? (
           <>
             Font<p>Choose the font that suits you best!</p>
           </>
-        ) : (
+        ) : klist == "theme" ? (
           <>
             Theme<p>Choose the UI theme of AHQ Store</p>
           </>
-        )}
+        ) : <>
+          Scale<p>Choose your scale factor</p>
+        </>}
       </h6>
 
       <div className="mx-auto"></div>
 
-      <select
-        className="dui-select dui-select-bordered w-[15rem] max-w-xs my-auto"
-        value={initial}
-        onChange={onChange}
-        style={{
-          fontWeight: "bold",
-        }}
-      >
-        {list ? (
-          <>
+      <Select defaultValue={initial} onValueChange={onChange}>
+        <SelectTrigger className="h-10 w-[15rem] max-w-xs my-auto">
+          <SelectValue placeholder="Select" />
+        </SelectTrigger>
+
+        <SelectContent>
+          {list ? (<>
             {list.map((item) => (
-              <option
+              <SelectItem
                 key={item}
                 value={item}
-                style={{ fontFamily: "Segoe UI" }}
-                data-theme={item}
-                className="text-lg text-base-content bg-base"
+                className="text-lg"
               >
                 {item == "night"
                   ? "Dark"
                   : item[0].toUpperCase() + item.slice(1)}
-              </option>
-            ))}
-          </>
-        ) : (
-          <>
-            <optgroup label="Store Style">
-              <option value="def" style={{ fontFamily: "Segoe UI" }}>
-                Normal
-              </option>
-              <option value="def-v" style={{ fontFamily: "Roboto" }}>
-                Pro
-              </option>
-            </optgroup>
-            <optgroup label="Store+">
-              <option value="ari" style={{ fontFamily: "Arial" }}>
-                Arial
-              </option>
-              <option value="ext" style={{ fontFamily: "Extatica" }}>
-                Extatica
-              </option>
-              <option value="bhn" style={{ fontFamily: "Bahnschrift" }}>
-                Bahnschrift
-              </option>
-            </optgroup>
-            <optgroup label="Formal">
-              <option value="tnr" style={{ fontFamily: "Times New Roman" }}>
-                Times New Roman
-              </option>
-              <option value="geo" style={{ fontFamily: "Georgia" }}>
-                Georgia
-              </option>
-              <option value="gra" style={{ fontFamily: "Garamond" }}>
-                Garamond
-              </option>
-            </optgroup>
-          </>
-        )}
-      </select>
+              </SelectItem>
+            ))}</>) :
+            (<>
+              <SelectGroup>
+                <SelectLabel className="border-t-0">Store Style</SelectLabel>
+                <SelectItem value="def" style={{ fontFamily: "Segoe UI" }}>
+                  Normal
+                </SelectItem>
+                <SelectItem value="def-v" style={{ fontFamily: "Roboto" }}>
+                  Pro
+                </SelectItem>
+              </SelectGroup>
+              <SelectGroup>
+                <SelectLabel>Store+</SelectLabel>
+                <SelectItem value="ari" style={{ fontFamily: "Arial" }}>
+                  Arial
+                </SelectItem>
+                <SelectItem value="ext" style={{ fontFamily: "Extatica" }}>
+                  Extatica
+                </SelectItem>
+                <SelectItem value="bhn" style={{ fontFamily: "Bahnschrift" }}>
+                  Bahnschrift
+                </SelectItem>
+              </SelectGroup>
+              <SelectGroup>
+                <SelectLabel>Formal</SelectLabel>
+                <SelectItem value="tnr" style={{ fontFamily: "Times New Roman" }}>
+                  Times New Roman
+                </SelectItem>
+                <SelectItem value="geo" style={{ fontFamily: "Georgia" }}>
+                  Georgia
+                </SelectItem>
+                <SelectItem value="gra" style={{ fontFamily: "Garamond" }}>
+                  Garamond
+                </SelectItem>
+              </SelectGroup>
+            </>)
+          }
+        </SelectContent>
+      </Select>
 
       <div className="mr-3"></div>
     </div>
