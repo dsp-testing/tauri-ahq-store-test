@@ -1,3 +1,5 @@
+# We're rewriting AHQ Store into a better application in https://github.com/ahqstore/client
+
 [![References](https://img.icons8.com/cute-clipart/13/book.png) References](#references)
 
 [![App Publish](https://github.com/ahqsoftwares/tauri-ahq-store/actions/workflows/publish.yml/badge.svg?branch=dev)](https://github.com/ahqsoftwares/tauri-ahq-store/actions/workflows/publish.yml)
